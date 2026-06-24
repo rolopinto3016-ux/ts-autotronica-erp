@@ -1,1 +1,50 @@
+/**
+ * ===========================================================
+ * TS AUTOTRÓNICA ERP
+ * Utils.gs
+ * ===========================================================
+ */
 
+/**
+ * Genera un UUID
+ */
+function uuid() {
+  return Utilities.getUuid();
+}
+
+/**
+ * Fecha corta
+ */
+function hoy() {
+
+  return Utilities.formatDate(
+    new Date(),
+    Session.getScriptTimeZone(),
+    "dd/MM/yyyy"
+  );
+
+}
+
+/**
+ * Fecha larga
+ */
+function ahora() {
+
+  return Utilities.formatDate(
+    new Date(),
+    Session.getScriptTimeZone(),
+    "dd/MM/yyyy HH:mm:ss"
+  );
+
+}
+
+/**
+ * Convierte texto a mayúsculas
+ */
+function mayusculas(texto){
+
+  if(texto==null) return "";
+
+  return texto.toString().trim().toUpperCase();
+
+}
