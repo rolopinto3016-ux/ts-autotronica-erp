@@ -1,1 +1,316 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<base target="_top">
 
+<title>Vehículos</title>
+
+<style>
+
+body{
+    font-family:Arial;
+    background:#f4f6f9;
+    margin:20px;
+}
+
+.card{
+    background:#FFF;
+    padding:20px;
+    border-radius:10px;
+    box-shadow:0 2px 8px rgba(0,0,0,.15);
+}
+
+h2{
+    color:#0B5394;
+}
+
+.grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:12px;
+}
+
+input,select,textarea{
+
+    padding:10px;
+    border:1px solid #CCC;
+    border-radius:5px;
+    width:100%;
+
+}
+
+button{
+
+    background:#0B5394;
+    color:white;
+    border:none;
+    padding:12px 20px;
+    border-radius:5px;
+    cursor:pointer;
+
+}
+
+button:hover{
+
+    background:#063763;
+
+}
+
+table{
+
+    width:100%;
+    border-collapse:collapse;
+    margin-top:20px;
+
+}
+
+th{
+
+    background:#0B5394;
+    color:white;
+
+}
+
+td,th{
+
+    border:1px solid #DDD;
+    padding:8px;
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="card">
+
+<h2>Registro de Vehículos</h2>
+
+<div class="grid">
+
+<input id="placa" placeholder="Placa">
+
+<select id="cliente"></select>
+
+<input id="marca" placeholder="Marca">
+
+<input id="modelo" placeholder="Modelo">
+
+<input id="anio" placeholder="Año">
+
+<input id="color" placeholder="Color">
+
+<input id="vin" placeholder="VIN">
+
+<input id="motor" placeholder="Motor">
+
+<select id="combustible">
+
+<option>GASOLINA</option>
+
+<option>DIESEL</option>
+
+<option>GNV</option>
+
+<option>GLP</option>
+
+<option>ELÉCTRICO</option>
+
+<option>HÍBRIDO</option>
+
+</select>
+
+<select id="transmision">
+
+<option>MANUAL</option>
+
+<option>AUTOMÁTICA</option>
+
+</select>
+
+<input id="kilometraje"
+placeholder="Kilometraje">
+
+<textarea
+id="observaciones"
+placeholder="Observaciones">
+</textarea>
+
+</div>
+
+<br>
+
+<button onclick="guardar()">
+
+Guardar Vehículo
+
+</button>
+
+<hr>
+
+<input
+id="buscar"
+placeholder="Buscar..."
+onkeyup="buscar()">
+
+<table>
+
+<thead>
+
+<tr>
+
+<th>Placa</th>
+
+<th>Marca</th>
+
+<th>Modelo</th>
+
+<th>Km</th>
+
+</tr>
+
+</thead>
+
+<tbody id="tablaVehiculos">
+
+</tbody>
+
+</table>
+
+</div>
+
+<script>
+
+function guardar(){
+
+const datos={
+
+idCliente:
+document.getElementById("cliente").value,
+
+placa:
+document.getElementById("placa").value,
+
+vin:
+document.getElementById("vin").value,
+
+motor:
+document.getElementById("motor").value,
+
+marca:
+document.getElementById("marca").value,
+
+modelo:
+document.getElementById("modelo").value,
+
+anio:
+document.getElementById("anio").value,
+
+color:
+document.getElementById("color").value,
+
+combustible:
+document.getElementById("combustible").value,
+
+transmision:
+document.getElementById("transmision").value,
+
+kilometraje:
+document.getElementById("kilometraje").value,
+
+observaciones:
+document.getElementById("observaciones").value
+
+};
+
+google.script.run
+
+.withSuccessHandler(function(r){
+
+alert(r.message);
+
+listar();
+
+})
+
+.apiRegistrarVehiculo(datos);
+
+}
+
+function listar(){
+
+google.script.run
+
+.withSuccessHandler(function(r){
+
+let html="";
+
+r.data.forEach(function(v){
+
+html+="<tr>";
+
+html+="<td>"+v.PLACA+"</td>";
+
+html+="<td>"+v.MARCA+"</td>";
+
+html+="<td>"+v.MODELO+"</td>";
+
+html+="<td>"+v.KILOMETRAJE+"</td>";
+
+html+="</tr>";
+
+});
+
+document.getElementById("tablaVehiculos").innerHTML=html;
+
+})
+
+.apiListarVehiculos();
+
+}
+
+function buscar(){
+
+const texto=
+document.getElementById("buscar").value;
+
+google.script.run
+
+.withSuccessHandler(function(r){
+
+let html="";
+
+r.data.forEach(function(v){
+
+html+="<tr>";
+
+html+="<td>"+v.PLACA+"</td>";
+
+html+="<td>"+v.MARCA+"</td>";
+
+html+="<td>"+v.MODELO+"</td>";
+
+html+="<td>"+v.KILOMETRAJE+"</td>";
+
+html+="</tr>";
+
+});
+
+document.getElementById("tablaVehiculos").innerHTML=html;
+
+})
+
+.apiBuscarVehiculos(texto);
+
+}
+
+listar();
+
+</script>
+
+</body>
+
+</html>
