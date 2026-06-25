@@ -1,95 +1,183 @@
 /**
- * ==========================================================
+ * ===========================================================
  * TS AUTOTRÓNICA ERP
- * BaseRepository.gs
+ * Database.gs
  * Versión 0.1.0
- * ==========================================================
+ * ===========================================================
  */
 
-class BaseRepository {
+function crearBaseDatos() {
 
-  constructor(sheetName) {
-    this.sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(sheetName);
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
 
-    if (!this.sheet) {
-      throw new Error("No existe la hoja: " + sheetName);
+  const hojas = [
+
+    {
+      nombre: "CONFIG",
+      columnas: [
+        "CLAVE",
+        "VALOR"
+      ]
+    },
+
+    {
+      nombre: "USUARIOS",
+      columnas: [
+        "ID_USUARIO",
+        "NOMBRE",
+        "CORREO",
+        "ROL",
+        "ESTADO"
+      ]
+    },
+
+    {
+      nombre: "CLIENTES",
+      columnas: [
+        "ID_CLIENTE",
+        "NOMBRE",
+        "CI_NIT",
+        "TELEFONO",
+        "WHATSAPP",
+        "EMAIL",
+        "DIRECCION",
+        "FECHA_REGISTRO"
+      ]
+    },
+
+    {
+      nombre: "VEHICULOS",
+      columnas: [
+        "ID_VEHICULO",
+        "ID_CLIENTE",
+        "PLACA",
+        "MARCA",
+        "MODELO",
+        "AÑO",
+        "COLOR",
+        "VIN",
+        "MOTOR",
+        "COMBUSTIBLE",
+        "KILOMETRAJE"
+      ]
+    },
+
+    {
+      nombre: "RECEPCION",
+      columnas: [
+        "ID_RECEPCION",
+        "FECHA",
+        "CLIENTE",
+        "VEHICULO",
+        "KILOMETRAJE",
+        "COMBUSTIBLE",
+        "OBSERVACIONES",
+        "ESTADO"
+      ]
+    },
+
+    {
+      nombre: "DIAGNOSTICOS",
+      columnas: [
+        "ID_DIAGNOSTICO",
+        "ID_RECEPCION",
+        "CODIGO_OBD",
+        "DESCRIPCION",
+        "TECNICO",
+        "FECHA"
+      ]
+    },
+
+    {
+      nombre: "OT",
+      columnas: [
+        "ID_OT",
+        "ID_DIAGNOSTICO",
+        "TECNICO",
+        "ESTADO",
+        "TOTAL"
+      ]
+    },
+
+    {
+      nombre: "PRESUPUESTOS",
+      columnas: [
+        "ID_PRE",
+        "CLIENTE",
+        "TOTAL",
+        "ESTADO"
+      ]
+    },
+
+    {
+      nombre: "REPUESTOS",
+      columnas: [
+        "CODIGO",
+        "DESCRIPCION",
+        "MARCA",
+        "STOCK",
+        "PRECIO"
+      ]
+    },
+
+    {
+      nombre: "FACTURAS",
+      columnas: [
+        "ID_FACTURA",
+        "CLIENTE",
+        "TOTAL",
+        "FECHA"
+      ]
+    },
+
+    {
+      nombre: "PAGOS",
+      columnas: [
+        "ID_PAGO",
+        "FACTURA",
+        "MONTO",
+        "METODO"
+      ]
+    },
+
+    {
+      nombre: "DASHBOARD",
+      columnas: [
+        "INDICADOR",
+        "VALOR"
+      ]
     }
-  }
 
-  /**
-   * Obtiene todos los registros
-   */
-  findAll() {
+  ];
 
-    const data = this.sheet.getDataRange().getValues();
+  hojas.forEach(function(h) {
 
-    if (data.length <= 1) return [];
+    let hoja = ss.getSheetByName(h.nombre);
 
-    const headers = data.shift();
+    if (!hoja) {
 
-    return data.map(row => {
-      let obj = {};
+      hoja = ss.insertSheet(h.nombre);
 
-      headers.forEach((h, i) => {
-        obj[h] = row[i];
-      });
+    } else {
 
-      return obj;
-    });
-
-  }
-
-  /**
-   * Inserta un registro
-   */
-  insert(values) {
-
-    this.sheet.appendRow(values);
-
-  }
-
-  /**
-   * Busca una fila por ID
-   */
-  findById(id) {
-
-    const data = this.sheet.getDataRange().getValues();
-
-    for (let i = 1; i < data.length; i++) {
-
-      if (data[i][0] == id) {
-
-        return {
-          row: i + 1,
-          values: data[i]
-        };
-
-      }
+      hoja.clear();
 
     }
 
-    return null;
+    hoja.getRange(1,1,1,h.columnas.length)
+      .setValues([h.columnas]);
 
-  }
+    hoja.getRange(1,1,1,h.columnas.length)
+      .setFontWeight("bold");
 
-  /**
-   * Actualiza una fila
-   */
-  update(row, values) {
+    hoja.setFrozenRows(1);
 
-    this.sheet
-      .getRange(row, 1, 1, values.length)
-      .setValues([values]);
+    hoja.autoResizeColumns(1,h.columnas.length);
 
-  }
+  });
 
-  /**
-   * Elimina una fila
-   */
-  delete(row) {
-
-    this.sheet.deleteRow(row);
-
-  }
+  SpreadsheetApp.getUi().alert(
+    "TS Autotrónica ERP\n\nBase de datos creada correctamente."
+  );
 
 }
